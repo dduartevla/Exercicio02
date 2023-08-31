@@ -6,66 +6,87 @@ public class Classe {
     //inicia os valores
     List<Integer> numerosEntrada;
     double valorEntrada;
-    List<Integer> list2;
-    int totalOcorrencias;
-
-    //seta os valores
-
 
     public void setValorEntrada(double valorEntrada) {
         this.valorEntrada = valorEntrada;
     }
 
     public void setNumerosEntrada(List<Integer> numerosEntrada) {
-        this.numerosEntrada = numerosEntrada;
+        if (numerosEntrada != null) {
+            this.numerosEntrada = numerosEntrada;
+        } else {
+            throw new IllegalArgumentException("Lista inválida!");
+        }
     }
 
-
-    //enche a primeira lista
-
-
-    //faz a segunda lista
-
-
-    //conta as semelhanças entre a lista do parametro e a segunda lista
-
-
-    //verifica quantos valores iguais foram envontrados
-
-    public double metodo(List<Integer> num, double valor) {
+    public List<Integer> fazPrimeiraLista(){
         List<Integer> list = new ArrayList<>();
-        for (Integer n: num){
+        for (Integer n: numerosEntrada){
             if (n < 1 || n > 60){
-                return 0.0;
+                throw new IllegalArgumentException("Valor inválido encontrado!");
             }
             if (list.contains(n)){
-                return 0.0;
+                throw new IllegalArgumentException("Valor inválido encontrado!");
             }
             list.add(n);
         }
-        if (list.size() >= 6 && list.size() <= 15) {
-            List<Integer> list2 = new ArrayList<>();
-            int s;
-            while (list2.size() < 6) {
-                s = new Random().nextInt(59) + 1;
-                if (!list2.contains(s)) {
-                    list2.add(s);
-                }
-            }
-            int tot =0;
-            for (Integer i: num){
-                if (list2.contains(i)){
-                    tot++;
-                }
-            }
-            if (tot == 6){
-                return valor;
-            } else if (tot == 5){
-                return valor * 0.2;
-            } else if (tot == 4){
-                return valor * 0.05;
+        return list;
+    }
+
+    public boolean lista1Valida(List<Integer> list){
+        if (list!=null && list.size() >= 6 && list.size() <= 15){
+            return true;
+        }
+        else return false;
+    }
+
+    public List<Integer> fazSegundaLista(List<Integer> list){
+        if (!lista1Valida(list)){
+            throw new IllegalArgumentException("Primeira lista não é válida!");
+        }
+
+        List<Integer> list2 = new ArrayList<>();
+        int s;
+        while (list2.size() < 6) {
+            s = new Random().nextInt(59) + 1;
+            if (!list2.contains(s)) {
+                list2.add(s);
             }
         }
-        return 0.0;
+        return list2;
+    }
+
+    public int contaIguais(List<Integer> list2){
+        if (list2 != null){
+            throw new NullPointerException("Segunda lista é nula!");
+        }
+        int total=0;
+
+        for (Integer i: numerosEntrada){
+            if (list2.contains(i)){
+                total++;
+            }
+        }
+        return total;
+    }
+
+    public double calculaValor(int total){
+        double resultado = valorEntrada;
+
+        if (total == 5){
+            resultado =  valorEntrada * 0.2;
+        } else if (total == 4){
+            resultado = valorEntrada * 0.05;
+        }
+
+        return resultado;
+    }
+
+    public double metodo(List<Integer> num, double valor) {
+        List<Integer> list = fazPrimeiraLista();
+        List<Integer> list2 = fazSegundaLista(list);
+        int total = contaIguais(list2);
+
+        return calculaValor(total);
     }
 }

@@ -9,14 +9,15 @@ public class Sorteio {
     private final double QUATRO_ACERTOS = 0.05;
     Aposta aposta;
 
+    public Sorteio(){
+        this.aposta = new Aposta();
+    }
 
-
-    int totalAcertos;
 
     public List<Integer> fazSorteio(){
         List<Integer> numerosSorteados =  new ArrayList<>();
         int s;
-        while (numerosSorteados.size() < 6) {
+        while (numerosSorteados.size() <= 6) {
             s = new Random().nextInt(NUM_MAX-1) + 1;
             if (!numerosSorteados.contains(s)) {
                 numerosSorteados.add(s);
@@ -25,29 +26,29 @@ public class Sorteio {
         return numerosSorteados;
     }
 
-    public void contaAcertos(List<Integer> numerosSorteados, List<Integer> numerosAposta){
+    public int contaAcertos(List<Integer> numerosSorteados, List<Integer> numerosAposta){
         if (numerosSorteados == null){
-            throw new NullPointerException("Segunda lista é nula!");
+            throw new NullPointerException("Lista de numeros sorteados é nula!");
         }
-        if (numerosAposta == null){
-            throw new NullPointerException("Lista de números apostados é nula!");
-        }
-        totalAcertos=0;
+        int totalAcertos=0;
 
         for (Integer i: aposta.buscaDuplicados(numerosAposta)){
             if (numerosSorteados.contains(i)){
                 totalAcertos++;
             }
         }
+
+        return totalAcertos;
     }
 
-    public double calculaValor(List<Integer> numerosAposta,double valorPremio){
-        List<Integer> numerosSorteados = fazSorteio();
-        contaAcertos(numerosSorteados,numerosAposta);
+    public void isNumerosApostaValido(List<Integer> numAposta){
+        List<Integer> auxNumAposta = aposta.buscaDuplicados(numAposta);
+    }
 
+    public double auxCalculaValor(int totalAcertos, double valorPremio){
         double resultado = 0.0;
 
-        if (totalAcertos == 6){
+        if (totalAcertos >= 6){
             resultado = valorPremio;
         } else if (totalAcertos == 5){
             resultado =  valorPremio * CINCO_ACERTOS;
@@ -56,5 +57,16 @@ public class Sorteio {
         }
 
         return resultado;
+    }
+
+    public double calculaValor(List<Integer> numerosAposta,double valorPremio){
+        isNumerosApostaValido(numerosAposta);
+        if (valorPremio <=0){
+            throw new IllegalArgumentException("Valor do prêmio inválido!");
+        }
+
+        List<Integer> numerosSorteados = fazSorteio();
+        int totalAcertos = contaAcertos(numerosSorteados,numerosAposta);
+        return auxCalculaValor(totalAcertos, valorPremio);
     }
 }
